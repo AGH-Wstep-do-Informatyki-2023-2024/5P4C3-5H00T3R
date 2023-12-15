@@ -5,12 +5,11 @@ import random
 # import enemies
 # import projectiles
 
+# init
 Hell = ValueError
-
 pygame.init()
-
-FPS = 60
 FramePerSec = pygame.time.Clock()
+
 
 # Predefined some colors
 BLUE = (0, 0, 255)
@@ -20,9 +19,11 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
 # Screen information
+FPS = 60
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 600
 
+# Window stuff
 DISPLAYSURF = pygame.display.set_mode((400, 600))
 DISPLAYSURF.fill(WHITE)
 pygame.display.set_caption("Kosmiczne elfy amarena giera")
@@ -130,13 +131,13 @@ def redraw_game_window():
 
 P1 = Player()
 E1 = Enemy()
-# proj1 = Projectile(P1)
 SCORE = 0
 enemies = pygame.sprite.Group()
 enemies.add(E1)
 projectiles = pygame.sprite.Group()
-# projectiles.add(proj1)  TODO: Zeby projectile nie wyjebywaly gry
-while True:
+
+
+while True: # MAIN LOOP
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
