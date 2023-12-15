@@ -31,7 +31,7 @@ pygame.display.set_caption("Kosmiczne elfy amarena giera")
 class Projectile(pygame.sprite.Sprite):
     def __init__(self, coord):
         super().__init__()
-        self.image = pygame.image.load("Bullet.png")
+        self.image = pygame.image.load("img/Bullet.png")
         self.rect = self.image.get_rect()
         self.rect.center = coord
         self.velocity = 1
@@ -52,7 +52,7 @@ class Projectile(pygame.sprite.Sprite):
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load("Enemy.png")
+        self.image = pygame.image.load("img/Enemy.png")
         self.rect = self.image.get_rect()
         self.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
         self.hp = 2
@@ -71,7 +71,7 @@ class Enemy(pygame.sprite.Sprite):
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load("Player.png")
+        self.image = pygame.image.load("img/Player.png")
         self.rect = self.image.get_rect()
         self.rect.center = (160, 520)
         self.hp = 10
