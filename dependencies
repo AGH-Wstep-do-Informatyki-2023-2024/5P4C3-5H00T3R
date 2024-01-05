@@ -1,0 +1,4 @@
+PygameShader==1.0.4
+numpy >= 1.18
+pygame >=2.0.0
+cython >=0.29.21
