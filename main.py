@@ -1,7 +1,7 @@
 import pygame, sys
 from pygame.locals import *
 import random
-from PygameShader.shader import dithering # might not be useful
+#from PygameShader.shader import dithering # might not be useful # not used for now
  
 
 # import player
@@ -92,9 +92,9 @@ class Player(pygame.sprite.Sprite):
         self.cooldown_var = 0
         self.cooldown_stat = 20
         # Physics
-        self.speed = 0.1 # deprecated I guess # jednak nie 
-        self.drag = 0.03
-        self.base_acceleration = 3
+        self.speed = 0.08 # deprecated I guess # jednak nie 
+        self.drag = 0.07
+        self.base_acceleration = 2
         self.velocity = (0,0) # Speed of space ship
         self.is_thruster_running = False
         self.thrust_vector = (0,0) # Direction of acceleration
@@ -108,10 +108,9 @@ class Player(pygame.sprite.Sprite):
         def normalize_thrust_and_velocity_vector(self):
             # THRS_VEC
             dlg = ((self.thrust_vector[0]**2 + self.thrust_vector[1]**2)**(1/2)) #length of thrust vector
-            print(dlg)
             x, y = self.thrust_vector
             try:
-                x = x / dlg
+                x = x / dlg 
             except Gayming:
                 x = 0
             try:
@@ -131,13 +130,9 @@ class Player(pygame.sprite.Sprite):
             except Gayming:
                 y = 0
             self.vel_vector = (x, y)
-            
-
         def calculate_drag(self):
             erm = 1.0 - self.drag
-            self.velocity = (erm * self.velocity[0], erm * self.velocity[1]) 
-
-            
+            self.velocity = (erm * self.velocity[0], erm * self.velocity[1])
         def update(self):
             #self.thrust_vector = (self.thrust_vector[0], self.thrust_vector[1])
             
@@ -173,7 +168,6 @@ class Player(pygame.sprite.Sprite):
                 g, h = self.velocity
                 g += signum(x) * (accel[0] * self.speed)
                 h += signum(y) * (accel[1] * self.speed)
-                print(accel, "erm")
                 self.velocity = (g, h)
             self.physics.calculate_drag(self)
     def shoot(self):
