@@ -144,7 +144,7 @@ class CyclicAnim:  # Animacje zapetlane - idle, plomenie, wydechy etc. moga miec
             self.frame += 1
             self.last_update = current_time
             if self.frame >= len(self.animation_list[self.action]):
-                frame = 0
+                self.frame = 0
 
     def draw(self, screen: pygame.Surface, coords: tuple):
         screen.blit(self.animation_list[self.action][self.frame], coords)
