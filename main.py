@@ -23,7 +23,7 @@ font = pygame.font.SysFont(None, 14)
 from src import colors
 
 # Screen information
-FPS = 120
+FPS = 90
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 600
 
@@ -35,11 +35,6 @@ pygame.display.set_caption("Kosmiczne elfy amarena giera")
 # test czy dziala
 clock = pygame.time.Clock()
 dt = clock.tick(FPS)
-
-
-# Functions
-def signum(x):
-    return 0.0 if abs(x) == 0 else x / abs(x)
 
 
 ######## CLASS STUFF #############
@@ -63,6 +58,30 @@ class Projectile(pygame.sprite.Sprite):
     def draw(self, surface):
         surface.blit(self.image, self.rect)
 
+
+class Debug_Menu(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.tresc = ""
+        self.toggle = False
+        self.infinite_HP = False
+        self.pause = False
+        
+        self.settings = []
+
+        self.Checkbox = []
+        self.Checkbox.append("[ ] ")
+        self.Checkbox.append("[x] ")
+    class boolsetting(self):
+        pass
+    def Create_String():
+        pass
+    
+    def Spawn_Enemy():
+        pass
+    def Draw(self):
+        img = font.render(self.tresc, True, colors.RGB.BLACK)
+        
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
@@ -224,7 +243,7 @@ class Player(pygame.sprite.Sprite):
     def draw(self, surface):
         surface.blit(self.image, self.rect)
         surface.blit(self.dbg, (20, 20))
-    ######## FUNCTIONS ###############
+######## FUNCTIONS ##############
 
 
 def update_state():
@@ -234,6 +253,8 @@ def update_state():
     for projectile in projectiles:
         projectile.move()
 
+def signum(x):
+    return 0.0 if abs(x) == 0 else x / abs(x)
 
 def redraw_game_window():
     DISPLAYSURF.fill((255, int(P1.hp * 255 / 10), int(P1.hp * 255 / 10)))
