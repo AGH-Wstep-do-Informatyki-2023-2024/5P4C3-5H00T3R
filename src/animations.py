@@ -1,5 +1,5 @@
 import pygame
-from colors import RGB
+from src import colors
 
 
 class SpriteSheet:  # przechowuje sprite sheet
@@ -56,7 +56,7 @@ class GridSheetAnim:  # Animacje na bazie wektora przyspieszenia
         self.sprite_scale = scale
 
         # frame container and parameters
-        self.current_frame = ()
+        self.frame = ((self.frames_h - 1) // 2, (self.frames_v - 1) // 2)
         self.frames = []
 
         # extracting frames from sprite sheet
@@ -65,14 +65,14 @@ class GridSheetAnim:  # Animacje na bazie wektora przyspieszenia
             for x in range(self.frames_v):  # indeks w rzedzie w tabeli frames
                 temp_frame_list.append(
                     self.sprite_sheet.get_image((y * self.frames_h + x), self.sprite_width, self.sprite_height,
-                                                self.sprite_scale, RGB.KEY))
+                                                self.sprite_scale, colors.RGB.KEY))
             self.frames.append(temp_frame_list)
         pass
 
     def frame_xy_from_accel_vect(self, accel_vector, transition_threshold):
         # wybiera ktore klatki wyswietlac na podstawie wektora przyspieszenia
 
-        x, y = (self.frames_h + 1) // 2, (self.frames_v + 1) // 2
+        x, y = (self.frames_h - 1) // 2, (self.frames_v - 1) // 2
 
         # mapping x component of acceleration vector to frame coordinates (horizontal movement)
         if accel_vector[0] > transition_threshold:
@@ -101,11 +101,12 @@ class GridSheetAnim:  # Animacje na bazie wektora przyspieszenia
         return x, y
 
     def update(self, accel_vector, transition_threshold):
-        self.current_frame = self.frame_xy_from_accel_vect(accel_vector, transition_threshold)
+        self.frame = self.frame_xy_from_accel_vect(accel_vector, transition_threshold)
         pass
 
     def draw(self, screen: pygame.Surface, coords: tuple):
-        screen.blit(self.frames[self.current_frame[1]][self.current_frame[0]], coords)
+        screen.blit(self.frames[self.frame[1]][self.frame[0]], coords)
+        # TODO: wywala sie na strzalce w prawo i w dol (przy inkrementacji)
 
 
 class CyclicAnim:  # Animacje zapetlane - idle, plomenie, wydechy etc. moga miec po kilka wariantow np. zwykly wydech i boost
@@ -133,7 +134,7 @@ class CyclicAnim:  # Animacje zapetlane - idle, plomenie, wydechy etc. moga miec
                 temp_img_list.append(
                     self.sprite_sheet.get_image(step_counter, self.sprite_width, self.sprite_height,
                                                 self.sprite_scale,
-                                                RGB.KEY))
+                                                colors.RGB.KEY))
                 step_counter += 1
             self.animation_list.append(temp_img_list)
 
