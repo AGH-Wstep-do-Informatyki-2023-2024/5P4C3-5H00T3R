@@ -289,7 +289,7 @@ while True:
             #print(enemy, enemy.hp)
             if enemy.hp == 0:
                 enemy.kill()
-                SCORE =+1
+                SCORE += 1
                 
                 
 
