@@ -1,16 +1,11 @@
 import pygame, sys
 from pygame.locals import *
 import random
-
 # from PygameShader.shader import dithering # might not be useful # not used for now
-
-# import enemies
-# import projectiles
 
 # init
 pygame.init()
 FramePerSec = pygame.time.Clock()
-
 
 # Predefined some colors
 from src import colors
@@ -49,8 +44,6 @@ class Enemy(pygame.sprite.Sprite):
     def draw(self, surface):
         surface.blit(self.image, self.rect)
 
-
-
 ######## FUNCTIONS ##############
 
 def update_state():
@@ -76,9 +69,7 @@ def redraw_game_window():
     DebugMenu.draw(DISPLAYSURF)
     pygame.display.update()
 
-
 ######## VARIABLES ###############
-
 
 P1 = Player()
 E1 = Enemy()
