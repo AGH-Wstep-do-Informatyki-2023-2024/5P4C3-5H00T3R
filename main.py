@@ -9,9 +9,6 @@ import random
 # import enemies
 # import projectiles
 
-# syf
-debug = True
-
 # init
 Hell = ValueError
 Gayming = ZeroDivisionError
@@ -21,20 +18,19 @@ font = pygame.font.SysFont(None, 24)
 
 # Predefined some colors
 from src import colors
+from src import debug_menu as DbgM
+from src.config import cfg
+# Screen information # moved to config.py
 
-# Screen information
-FPS = 120
-SCREEN_WIDTH = 400
-SCREEN_HEIGHT = 600
 
 # Window stuff
-DISPLAYSURF = pygame.display.set_mode((400, 600))
+DISPLAYSURF = pygame.display.set_mode((cfg.SCREEN_WIDTH, cfg.SCREEN_HEIGHT))
 DISPLAYSURF.fill(colors.RGB.WHITE)
 pygame.display.set_caption("Kosmiczne elfy amarena giera")
 
-# test czy dziala
+# delta time init
 clock = pygame.time.Clock()
-dt = clock.tick(FPS)
+dt = clock.tick(cfg.FPS)
 
 
 ######## CLASS STUFF #############
@@ -59,80 +55,13 @@ class Projectile(pygame.sprite.Sprite):
         surface.blit(self.image, self.rect)
 
 
-class Debug_Menu(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.sel = int(0)
-        self.timeout = 0
-        self.tresc = ""
-        self.toggle = False
-        infinite_HP = self.boolsetting("Toggle infinite HP", False)
-        enemy_spawn = self.boolsetting("Toggle enemy spawn", False)
-        Debug_hud = self.boolsetting("Toggle debug HUD",False)
-        self.pause = False
-        
-        self.settings = []
-        self.settings.append(infinite_HP)
-        self.settings.append(enemy_spawn)
-
-        self.Checkbox = []
-        self.Checkbox.append("[ ] ")
-        self.Checkbox.append("[x] ")
-    class boolsetting:
-        def __init__(self, name : str, defaultbool : bool):
-            self.name = name
-            self.toggle = defaultbool
-    def Create_String(self):
-        cool = ""
-        erm = 0
-        for setti in self.settings:
-            if self.sel == erm:
-                cool += '>'
-            if setti.toggle:
-                cool += self.Checkbox[1]
-            else:
-                cool += self.Checkbox[0]
-            cool += setti.name
-            cool += '\n'
-            erm +=1
-        return cool
-    def update(self):
-        pressed_keys = pygame.key.get_pressed()
-        
-        if pressed_keys[K_F8] and self.timeout <= 0:
-            self.toggle = not self.toggle
-            self.timeout = int(FPS/2)
-        
-        if self.toggle:
-            if pressed_keys[K_UP]and self.timeout <= 0:
-                if self.sel > 0:
-                    self.sel -= 1
-                self.timeout = int(FPS/4)
-            if pressed_keys[K_DOWN]and self.timeout <= 0:
-                if self.sel < len(self.settings):
-                    self.sel += 1
-                    self.timeout = int(FPS/4)
-            if pressed_keys[K_t] and self.timeout <= 0:
-                self.timeout = int(FPS/4)
-                self.settings[self.sel].toggle = not self.settings[self.sel].toggle
-        if self.timeout > 0:
-            self.timeout -= 1
-        
-    def Spawn_Enemy():
-        pass
-    def draw(self, surface):
-        if self.toggle:
-            self.tresc = self.Create_String().split('\n')
-            for meow in range(len(self.tresc)):
-                img = font.render(self.tresc[meow], True, colors.RGB.BLACK)
-                surface.blit(img, (20, 80+(24*meow)))
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load("img/Enemy.png")
         self.rect = self.image.get_rect()
-        self.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
+        self.rect.center = (random.randint(40, cfg.SCREEN_WIDTH - 40), 0)
         self.hp = 2
         self.damage = 1
 
@@ -220,7 +149,7 @@ class Player(pygame.sprite.Sprite):
         except Gayming:
             p = 0
         vec_sum = (p, o)  # Normalized
-        if debug == True:
+        if cfg.debug == True:
             self.dbg = font.render(str(vec_sum) + str(p), True, colors.RGB.BLUE)
         accel = (0, 0)  # IS THAT A SERIAL EXPERIMENTS LAIN REFERENCE O_O??!
         b, n = accel
@@ -268,12 +197,12 @@ class Player(pygame.sprite.Sprite):
         self.normalize_thrust_and_velocity_vector()  # Normalizes input and velocity vector :3 ## trochę chaos :c
         self.update_phys()
 
-        if self.rect.right > SCREEN_WIDTH:
-            self.velocity = ((SCREEN_WIDTH - self.rect.right) * 0.2, self.velocity[1])
+        if self.rect.right > cfg.SCREEN_WIDTH:
+            self.velocity = ((cfg.SCREEN_WIDTH - self.rect.right) * 0.2, self.velocity[1])
         if self.rect.left < 0:
             self.velocity = (self.rect.left * -0.2, self.velocity[1])
-        if self.rect.bottom > SCREEN_HEIGHT:
-            self.velocity = (self.velocity[0], (SCREEN_HEIGHT - self.rect.bottom) * 0.2)
+        if self.rect.bottom > cfg.SCREEN_HEIGHT:
+            self.velocity = (self.velocity[0], (cfg.SCREEN_HEIGHT - self.rect.bottom) * 0.2)
 
         if self.rect.top < 0:
             self.velocity = (self.velocity[0], self.rect.top * -0.2)
@@ -324,7 +253,7 @@ SCORE = 0
 enemies = pygame.sprite.Group()
 enemies.add(E1)
 projectiles = pygame.sprite.Group()
-DebugMenu = Debug_Menu()
+DebugMenu = DbgM.Debug_Menu()
 
 # MAIN LOOP
 while True:
@@ -352,6 +281,6 @@ while True:
             if enemy.hp == 0:
                 enemy.kill()
 
-    dt = clock.tick(FPS)
+    dt = clock.tick(cfg.FPS)
     redraw_game_window()
-    FramePerSec.tick(FPS)
+    FramePerSec.tick(cfg.FPS)
