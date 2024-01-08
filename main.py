@@ -17,13 +17,13 @@ Hell = ValueError
 Gayming = ZeroDivisionError
 pygame.init()
 FramePerSec = pygame.time.Clock()
-font = pygame.font.SysFont(None, 14)
+font = pygame.font.SysFont(None, 24)
 
 # Predefined some colors
 from src import colors
 
 # Screen information
-FPS = 90
+FPS = 120
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 600
 
@@ -62,26 +62,70 @@ class Projectile(pygame.sprite.Sprite):
 class Debug_Menu(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
+        self.sel = int(0)
+        self.timeout = 0
         self.tresc = ""
         self.toggle = False
-        self.infinite_HP = False
+        infinite_HP = self.boolsetting("Toggle infinite HP", False)
+        enemy_spawn = self.boolsetting("Toggle enemy spawn", False)
+        Debug_hud = self.boolsetting("Toggle debug HUD",False)
         self.pause = False
         
         self.settings = []
+        self.settings.append(infinite_HP)
+        self.settings.append(enemy_spawn)
 
         self.Checkbox = []
         self.Checkbox.append("[ ] ")
         self.Checkbox.append("[x] ")
-    class boolsetting(self):
-        pass
-    def Create_String():
-        pass
-    
+    class boolsetting:
+        def __init__(self, name : str, defaultbool : bool):
+            self.name = name
+            self.toggle = defaultbool
+    def Create_String(self):
+        cool = ""
+        erm = 0
+        for setti in self.settings:
+            if self.sel == erm:
+                cool += '>'
+            if setti.toggle:
+                cool += self.Checkbox[1]
+            else:
+                cool += self.Checkbox[0]
+            cool += setti.name
+            cool += '\n'
+            erm +=1
+        return cool
+    def update(self):
+        pressed_keys = pygame.key.get_pressed()
+        
+        if pressed_keys[K_F8] and self.timeout <= 0:
+            self.toggle = not self.toggle
+            self.timeout = int(FPS/2)
+        
+        if self.toggle:
+            if pressed_keys[K_UP]and self.timeout <= 0:
+                if self.sel > 0:
+                    self.sel -= 1
+                self.timeout = int(FPS/4)
+            if pressed_keys[K_DOWN]and self.timeout <= 0:
+                if self.sel < len(self.settings):
+                    self.sel += 1
+                    self.timeout = int(FPS/4)
+            if pressed_keys[K_t] and self.timeout <= 0:
+                self.timeout = int(FPS/4)
+                self.settings[self.sel].toggle = not self.settings[self.sel].toggle
+        if self.timeout > 0:
+            self.timeout -= 1
+        
     def Spawn_Enemy():
         pass
-    def Draw(self):
-        img = font.render(self.tresc, True, colors.RGB.BLACK)
-        
+    def draw(self, surface):
+        if self.toggle:
+            self.tresc = self.Create_String().split('\n')
+            for meow in range(len(self.tresc)):
+                img = font.render(self.tresc[meow], True, colors.RGB.BLACK)
+                surface.blit(img, (20, 80+(24*meow)))
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
@@ -248,6 +292,7 @@ class Player(pygame.sprite.Sprite):
 
 def update_state():
     P1.update()
+    DebugMenu.update()
     for enemy in enemies:
         enemy.move()
     for projectile in projectiles:
@@ -266,7 +311,7 @@ def redraw_game_window():
 
     for projectile in projectiles:
         projectile.draw(DISPLAYSURF)
-
+    DebugMenu.draw(DISPLAYSURF)
     pygame.display.update()
 
 
@@ -279,6 +324,7 @@ SCORE = 0
 enemies = pygame.sprite.Group()
 enemies.add(E1)
 projectiles = pygame.sprite.Group()
+DebugMenu = Debug_Menu()
 
 # MAIN LOOP
 while True:
