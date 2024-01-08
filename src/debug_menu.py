@@ -3,17 +3,22 @@ from pygame.locals import *
 from .config import cfg
 from .colors import RGB
 from .ui import fonts
+from .player import Player
 
 class Debug_Menu(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self,_Player: Player):
         super().__init__()
         self.sel = int(0)
         self.timeout = 0
         self.tresc = ""
         self.toggle = False
-        infinite_HP = self.boolsetting("Toggle infinite HP", False)
-        enemy_spawn = self.boolsetting("Toggle enemy spawn", False)
-        Debug_hud = self.boolsetting("Toggle debug HUD", False)
+
+        self.plr = _Player
+        self.plr_old_HP = int(_Player.hp)
+
+        infinite_HP = self.boolsetting("Toggle infinite HP", False, self.Make_player_invincible)
+        enemy_spawn = self.boolsetting("Toggle enemy spawn", False, print())
+        Debug_hud = self.boolsetting("Toggle debug HUD", False, print())
         self.pause = False
         
         self.settings = []
@@ -21,15 +26,23 @@ class Debug_Menu(pygame.sprite.Sprite):
         self.settings.append(enemy_spawn)
         self.settings.append(Debug_hud)
 
+        
+
         self.Checkbox = []
         self.Checkbox.append("[ ] ")
         self.Checkbox.append("[x] ")
     class boolsetting:
-        def __init__(self, name : str, defaultbool : bool):
+        def __init__(self, name : str, defaultbool : bool,func):
             self.name = name
             self.toggle = defaultbool
-    #def Make_player_invincible(self,P : Player)
-
+            self.fun = func
+        def do(self):
+            self.fun(self.toggle)
+    def Make_player_invincible(self, toggle : bool ):
+        if toggle:
+            self.plr.hp = int("0111111111111111111111111111111111111111111111111111111111111111",base=2)
+        else:
+            self.plr.hp = self.plr_old_HP
     def Create_String(self):
         cool = ""
         erm = 0
@@ -63,6 +76,7 @@ class Debug_Menu(pygame.sprite.Sprite):
             if pressed_keys[K_t] and self.timeout <= 0:
                 self.timeout = int(cfg.FPS/4)
                 self.settings[self.sel].toggle = not self.settings[self.sel].toggle
+                self.settings[self.sel].do()
         if self.timeout > 0:
             self.timeout -= 1
         

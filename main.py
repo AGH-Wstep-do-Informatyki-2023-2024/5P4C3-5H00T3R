@@ -18,6 +18,7 @@ from src import debug_menu as DbgM
 from src.player import Player
 from src.config import cfg
 from src.gameinit import *
+from src.fun import *
 # from src.ui import fonts
 # Screen information # moved to config.py
 
@@ -29,9 +30,6 @@ pygame.display.set_caption("Kosmiczne elfy amarena giera")
 
 
 ######## CLASS STUFF #############
-
-
-
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
@@ -55,7 +53,6 @@ class Enemy(pygame.sprite.Sprite):
 
 ######## FUNCTIONS ##############
 
-
 def update_state():
     P1.update()
     DebugMenu.update()
@@ -65,8 +62,10 @@ def update_state():
         projectile.move()
 
 def redraw_game_window():
-    DISPLAYSURF.fill((255, int(P1.hp * 255 / 10), int(P1.hp * 255 / 10)))
-
+    try:
+        DISPLAYSURF.fill((255, int(P1.hp * 255 / 10), int(P1.hp * 255 / 10)))
+    except Hell:
+        DISPLAYSURF.fill((255, 255, 255))
     P1.draw(DISPLAYSURF)
 
     for enemy in enemies:
@@ -86,7 +85,7 @@ E1 = Enemy()
 SCORE = 0
 enemies = pygame.sprite.Group()
 enemies.add(E1)
-DebugMenu = DbgM.Debug_Menu()
+DebugMenu = DbgM.Debug_Menu(P1)
 
 # MAIN LOOP
 while True:
