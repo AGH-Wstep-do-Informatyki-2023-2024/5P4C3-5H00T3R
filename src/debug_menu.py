@@ -2,8 +2,7 @@ import pygame,sys
 from pygame.locals import *
 from .config import cfg
 from .colors import RGB
-
-font = pygame.font.SysFont(None, 24)
+from .ui import fonts
 
 class Debug_Menu(pygame.sprite.Sprite):
     def __init__(self):
@@ -29,6 +28,8 @@ class Debug_Menu(pygame.sprite.Sprite):
         def __init__(self, name : str, defaultbool : bool):
             self.name = name
             self.toggle = defaultbool
+    #def Make_player_invincible(self,P : Player)
+
     def Create_String(self):
         cool = ""
         erm = 0
@@ -71,5 +72,5 @@ class Debug_Menu(pygame.sprite.Sprite):
         if self.toggle:
             self.tresc = self.Create_String().split('\n')
             for meow in range(len(self.tresc)):
-                img = font.render(self.tresc[meow], True, RGB.BLACK)
+                img = fonts.Default.render(self.tresc[meow], True, RGB.BLACK)
                 surface.blit(img, (20, 80+(24*meow)))
