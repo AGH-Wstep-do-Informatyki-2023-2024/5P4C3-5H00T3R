@@ -106,7 +106,6 @@ class GridSheetAnim:  # Animacje na bazie wektora przyspieszenia
 
     def draw(self, screen: pygame.Surface, coords: tuple):
         screen.blit(self.frames[self.frame[1]][self.frame[0]], coords)
-        # TODO: wywala sie na strzalce w prawo i w dol (przy inkrementacji)
 
 
 class CyclicAnim:  # Animacje zapetlane - idle, plomenie, wydechy etc. moga miec po kilka wariantow np. zwykly wydech i boost
