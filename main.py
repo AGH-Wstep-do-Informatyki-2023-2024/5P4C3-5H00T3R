@@ -1,6 +1,7 @@
 import pygame, sys
 from pygame.locals import *
 import random
+from src import animations
 
 # from PygameShader.shader import dithering # might not be useful # not used for now
 
@@ -65,13 +66,14 @@ class Projectile(pygame.sprite.Sprite):
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, hp, damage, score_val):
         super().__init__()
         self.image = pygame.image.load("img/Enemy.png")
         self.rect = self.image.get_rect()
         self.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
-        self.hp = 2
-        self.damage = 1
+        self.hp = hp
+        self.damage = damage
+        self.score_val = score_val
 
     def move(self, na_gore=False):
         self.rect.move_ip(0, 5)
@@ -86,8 +88,10 @@ class Enemy(pygame.sprite.Sprite):
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load("img/Player.png")
-        self.rect = self.image.get_rect()
+        # Sprite
+        self.rect = pygame.Rect(0, 0, 64, 64)
+        self.anim_handler = animations.GridSheetAnim(pygame.image.load("img/Player_spritesheet.png"), 5, 5,
+                                                     self.rect.width, self.rect.height, 1)
         self.rect.center = (160, 520)
         # Stats
         self.hp = 10
@@ -205,6 +209,7 @@ class Player(pygame.sprite.Sprite):
         self.normalize_thrust_and_velocity_vector()  # Normalizes input and velocity vector :3 ## trochę chaos :c
         self.update_phys()
 
+        # Wall rebound
         if self.rect.right > SCREEN_WIDTH:
             self.velocity = ((SCREEN_WIDTH - self.rect.right) * 0.2, self.velocity[1])
         if self.rect.left < 0:
@@ -215,18 +220,25 @@ class Player(pygame.sprite.Sprite):
         if self.rect.top < 0:
             self.velocity = (self.velocity[0], self.rect.top * -0.2)
 
+        # Shooting
         if pressed_keys[K_SPACE] and not self.cooldown_var:
             self.shoot()
             self.cooldown_var = self.cooldown_stat
         # print(self.velocity)
         self.rect.move_ip(self.velocity[0] * dt, self.velocity[1] * dt)
 
+        # Animation
+        self.anim_handler.update(self.thrust_vector, 0.7)
+        # TODO: Ease in and out of acceleration
+
     def draw(self, surface):
-        surface.blit(self.image, self.rect)
-        surface.blit(self.dbg, (20, 20))
-    ######## FUNCTIONS ###############
+        self.anim_handler.draw(surface, self.rect.topleft)
+        # surface.blit(self.image, self.rect)
+        # surface.blit(self.dbg, (20, 20))
+        # TODO: tu sterowanie przejmuje klasa GridSheetAnim
 
 
+######## FUNCTIONS ###############
 def update_state():
     P1.update()
     for enemy in enemies:
@@ -258,6 +270,10 @@ SCORE = 0
 enemies = pygame.sprite.Group()
 enemies.add(E1)
 projectiles = pygame.sprite.Group()
+
+#debug loop
+
+
 
 # MAIN LOOP
 while True:
