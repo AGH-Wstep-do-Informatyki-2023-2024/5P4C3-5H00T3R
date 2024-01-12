@@ -246,6 +246,10 @@ def redraw_game_window():
     show_score(SCORE) #aktualizacja wyniku
     pygame.display.update()
 
+def spawn_enemy():
+    global enemies
+    enemy = Enemy()
+    enemies.add(enemy)
 
 #funkcja do wyświetlania wyniku
 def show_score(SCORE):
@@ -290,7 +294,7 @@ while True:
             if enemy.hp == 0:
                 enemy.kill()
                 SCORE += 1
-                
+                spawn_enemy()
                 
 
     dt = clock.tick(FPS)
