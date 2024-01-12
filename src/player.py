@@ -1,22 +1,28 @@
-import pygame,sys
+import pygame, sys
 from pygame.locals import *
+from src import animations
 from .config import cfg
 from .colors import RGB
 from .fun import *
-from .ui import fonts
+from .ui import Fonts
 from .gameinit import *
 from .projectiles import Projectile
+from .score import *
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load("img/Player.png")
-        self.rect = self.image.get_rect()
+        # Sprite
+        self.rect = pygame.Rect(0, 0, 64, 64)
+        self.anim_handler = animations.GridSheetAnim(pygame.image.load("img/Player_spritesheet.png"), 5, 5,
+                                                     self.rect.width, self.rect.height, 1)
         self.rect.center = (160, 520)
         # Stats
         self.hp = 10
         self.cooldown_var = 0
         self.cooldown_stat = 20
+        self.score = Score()
         # Physics
         self.speed = 0.08  # deprecated I guess # jednak nie
         self.drag = 0.07
@@ -81,8 +87,8 @@ class Player(pygame.sprite.Sprite):
         except Gayming:
             p = 0
         vec_sum = (p, o)  # Normalized
-        if cfg.debug == True:
-            self.dbg = fonts.Default.render(str(vec_sum) + str(p), True, RGB.BLUE)
+        if cfg.debug:
+            self.dbg = Fonts.default.render(str(vec_sum) + str(p), True, RGB.BLUE)
         accel = (0, 0)  # IS THAT A SERIAL EXPERIMENTS LAIN REFERENCE O_O??!
         b, n = accel
         b = self.base_acceleration * (1 / (abs(vec_sum[0]) + self.accel_low_border))
@@ -145,6 +151,12 @@ class Player(pygame.sprite.Sprite):
         # print(self.velocity)
         self.rect.move_ip(self.velocity[0] * dt, self.velocity[1] * dt)
 
+        # Animation
+        self.anim_handler.update(self.thrust_vector, 0.7)
+        # TODO: Ease in and out of acceleration - implement anim vector
+
     def draw(self, surface):
-        surface.blit(self.image, self.rect)
-        surface.blit(self.dbg, (20, 20))
+        self.anim_handler.draw(surface, self.rect.topleft)
+        # surface.blit(self.image, self.rect)
+        # surface.blit(self.dbg, (20, 20))
+        # TODO: tu sterowanie przejmuje klasa GridSheetAnim

@@ -11,11 +11,13 @@ FramePerSec = pygame.time.Clock()
 
 # Predefined some colors
 from src import colors
-from src import debug_menu as DbgM
+from src import debugmenu as DbgM
 from src.player import Player
 from src.config import cfg
 from src.gameinit import *
 from src.fun import *
+from src.score import *
+
 # from src.ui import fonts
 # Screen information # moved to config.py
 
@@ -23,7 +25,7 @@ from src.fun import *
 # Window stuff
 DISPLAYSURF = pygame.display.set_mode((cfg.SCREEN_WIDTH, cfg.SCREEN_HEIGHT))
 DISPLAYSURF.fill(colors.RGB.WHITE)
-pygame.display.set_caption("Kosmiczne elfy amarena giera")
+pygame.display.set_caption("Kosmiczne statki amarena giera ALPHA")
 
 
 ######## CLASS STUFF #############
@@ -38,14 +40,15 @@ class Enemy(pygame.sprite.Sprite):
         self.damage = damage
         self.score_val = score_val
 
-    def move(self, na_gore=False):
-        self.rect.move_ip(0, 5)
-        if (self.rect.bottom > 600) or na_gore:
+    def move(self, vel=2):
+        self.rect.move_ip(0, vel)
+        if self.rect.bottom > 600:
             self.rect.top = 0
             self.rect.center = (random.randint(30, 370), 0)
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)
+
 
 ######## FUNCTIONS ##############
 
@@ -58,15 +61,20 @@ def update_state():
         projectile.move()
 
 
-def spawn_enemy(hp, damage, score_val):
+def spawn_enemy(hp=2, damage=1, score_val=10):
     global enemies
     enemies.add(Enemy(hp, damage, score_val))
+    print("Spawned new enemy!")
+
 
 def redraw_game_window():
+    # Background
     try:
         DISPLAYSURF.fill((255, int(P1.hp * 255 / 10), int(P1.hp * 255 / 10)))
     except Hell:
         DISPLAYSURF.fill((255, 255, 255))
+
+    # Players
     P1.draw(DISPLAYSURF)
 
     for enemy in enemies:
@@ -74,17 +82,22 @@ def redraw_game_window():
 
     for projectile in projectiles:
         projectile.draw(DISPLAYSURF)
+
+    # Scores
+    P1.score.draw(DISPLAYSURF)
+
     DebugMenu.draw(DISPLAYSURF)
+
     pygame.display.update()
 
-######## VARIABLES ###############
 
+######## VARIABLES ###############
 P1 = Player()
-E1 = Enemy()
+E1 = Enemy(2, 1, 10)
 SCORE = 0
 enemies = pygame.sprite.Group()
 enemies.add(E1)
-DebugMenu = DbgM.Debug_Menu(P1)
+DebugMenu = DbgM.DebugMenu(P1)
 
 # MAIN LOOP
 while True:
@@ -95,21 +108,25 @@ while True:
 
     update_state()
 
-    if pygame.sprite.spritecollideany(P1, enemies):
-        E1.move(True)
-        P1.hp -= E1.damage
-
+    # TODO: change E1 to colliding enemy
+    coll_enemy = pygame.sprite.spritecollideany(P1, enemies)
+    if coll_enemy:
+        # print(coll_enemy)
+        P1.hp -= coll_enemy.damage
+        coll_enemy.kill()
+        spawn_enemy()
         if P1.hp == 0:
             pygame.quit()
             sys.exit()
 
     coll = pygame.sprite.groupcollide(enemies, projectiles, False, True)
     if coll:
-        print(coll)
+        # print(coll)
         for enemy in coll.keys():
             enemy.hp -= 1
-            print(enemy, enemy.hp)
+            # print(enemy, enemy.hp)
             if enemy.hp == 0:
+                P1.score.increase(enemy)
                 enemy.kill()
                 spawn_enemy(2, 1, 10)
 
