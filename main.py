@@ -245,7 +245,10 @@ def update_state():
         enemy.move()
     for projectile in projectiles:
         projectile.move()
-
+        
+def spawn_enemy(hp, damage, score_val):
+    global enemies
+    enemies.add(Enemy(hp, damage, score_val))
 
 def redraw_game_window():
     DISPLAYSURF.fill((255, int(P1.hp * 255 / 10), int(P1.hp * 255 / 10)))
@@ -300,6 +303,7 @@ while True:
             print(enemy, enemy.hp)
             if enemy.hp == 0:
                 enemy.kill()
+                spawn_enemy(2, 1, 10)
 
     dt = clock.tick(FPS)
     redraw_game_window()
