@@ -157,6 +157,4 @@ class Player(pygame.sprite.Sprite):
 
     def draw(self, surface):
         self.anim_handler.draw(surface, self.rect.topleft)
-        # surface.blit(self.image, self.rect)
-        # surface.blit(self.dbg, (20, 20))
-        # TODO: tu sterowanie przejmuje klasa GridSheetAnim
+        # Tu sterowanie przejmuje klasa GridSheetAnim

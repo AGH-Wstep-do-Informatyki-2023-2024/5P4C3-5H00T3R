@@ -108,7 +108,6 @@ while True:
 
     update_state()
 
-    # TODO: change E1 to colliding enemy
     coll_enemy = pygame.sprite.spritecollideany(P1, enemies)
     if coll_enemy:
         # print(coll_enemy)
