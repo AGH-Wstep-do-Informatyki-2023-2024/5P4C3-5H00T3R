@@ -1,0 +1,2 @@
+Hell = ValueError
+Gayming = ZeroDivisionError
