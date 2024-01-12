@@ -66,13 +66,14 @@ class Projectile(pygame.sprite.Sprite):
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, hp, damage, score_val):
         super().__init__()
         self.image = pygame.image.load("img/Enemy.png")
         self.rect = self.image.get_rect()
         self.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
-        self.hp = 2
-        self.damage = 1
+        self.hp = hp
+        self.damage = damage
+        self.score_val = score_val
 
     def move(self, na_gore=False):
         self.rect.move_ip(0, 5)
