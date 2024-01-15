@@ -68,25 +68,30 @@ def spawn_enemy(hp=2, damage=1, score_val=10):
 
 
 def redraw_game_window():
-    # Background
-    try:
-        DISPLAYSURF.fill((255, int(P1.hp * 255 / 10), int(P1.hp * 255 / 10)))
-    except Hell:
-        DISPLAYSURF.fill((255, 255, 255))
+    
+    if inMenu:
+        pass
+    
+    if not isPaused:
+        # Background
+        try:
+            DISPLAYSURF.fill((255, int(P1.hp * 255 / 10), int(P1.hp * 255 / 10)))
+        except Hell:
+            DISPLAYSURF.fill((255, 255, 255))
 
-    # Players
-    P1.draw(DISPLAYSURF)
+        # Players
+        P1.draw(DISPLAYSURF)
 
-    for enemy in enemies:
-        enemy.draw(DISPLAYSURF)
+        for enemy in enemies:
+            enemy.draw(DISPLAYSURF)
 
-    for projectile in projectiles:
-        projectile.draw(DISPLAYSURF)
+        for projectile in projectiles:
+            projectile.draw(DISPLAYSURF)
 
-    # Scores
-    P1.score.draw(DISPLAYSURF)
+        # Scores
+        P1.score.draw(DISPLAYSURF)
 
-    DebugMenu.draw(DISPLAYSURF)
+        DebugMenu.draw(DISPLAYSURF)
 
     pygame.display.update()
 
@@ -101,33 +106,41 @@ DebugMenu = DbgM.DebugMenu(P1)
 
 # MAIN LOOP
 while True:
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            pygame.quit()
-            sys.exit()
 
-    update_state()
+    # MENU LOOP
+    if inMenu:
+        pass
+    # GAME LOOP
+    if isPaused:
+        pass
+    else:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
 
-    coll_enemy = pygame.sprite.spritecollideany(P1, enemies)
-    if coll_enemy:
-        # print(coll_enemy)
-        P1.hp -= coll_enemy.damage
-        coll_enemy.kill()
-        spawn_enemy()
-        if P1.hp == 0:
-            pygame.quit()
-            sys.exit()
+        update_state()
 
-    coll = pygame.sprite.groupcollide(enemies, projectiles, False, True)
-    if coll:
-        # print(coll)
-        for enemy in coll.keys():
-            enemy.hp -= 1
-            # print(enemy, enemy.hp)
-            if enemy.hp == 0:
-                P1.score.increase(enemy)
-                enemy.kill()
-                spawn_enemy(2, 1, 10)
+        coll_enemy = pygame.sprite.spritecollideany(P1, enemies)
+        if coll_enemy:
+            # print(coll_enemy)
+            P1.hp -= coll_enemy.damage
+            coll_enemy.kill()
+            spawn_enemy()
+            if P1.hp == 0:
+                pygame.quit()
+                sys.exit()
+
+        coll = pygame.sprite.groupcollide(enemies, projectiles, False, True)
+        if coll:
+            # print(coll)
+            for enemy in coll.keys():
+                enemy.hp -= 1
+                # print(enemy, enemy.hp)
+                if enemy.hp == 0:
+                    P1.score.increase(enemy)
+                    enemy.kill()
+                    spawn_enemy(2, 1, 10)
 
     dt = clock.tick(cfg.FPS)
     redraw_game_window()
