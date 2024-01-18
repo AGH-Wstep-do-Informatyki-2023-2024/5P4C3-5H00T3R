@@ -15,9 +15,11 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         # Sprite
         self.rect = pygame.Rect(0, 0, 64, 64)
-        self.anim_handler = animations.GridSheetAnim(pygame.image.load("img/Player_spritesheet.png"), 5, 5,
+        self.anim_handler = animations.GridSheetAnim(pygame.image.load("img/spritesheets/Spritesheet_Default.png"), 5,
+                                                     5,
                                                      self.rect.width, self.rect.height, 1)
         self.rect.center = (160, 520)
+        self.accel_vect = (0, 0)
         # Stats
         self.hp = 10
         self.cooldown_var = 0
@@ -32,7 +34,7 @@ class Player(pygame.sprite.Sprite):
         self.thrust_vector = (0, 0)  # Direction of acceleration
         self.vel_vector = (0, 0)  # Velocity
         self.accel_low_border = 0.4  # lower values will make acceleration unpredictable
-        self.dbg = 0
+        self.dbg:pygame.Surface
 
     # class Physics:
     #     def __init__(self):
@@ -94,6 +96,7 @@ class Player(pygame.sprite.Sprite):
         b = self.base_acceleration * (1 / (abs(vec_sum[0]) + self.accel_low_border))
         n = self.base_acceleration * (1 / (abs(vec_sum[1]) + self.accel_low_border))
         accel = (b, n)
+        self.accel_vect = accel
         if self.is_thruster_running:
             g, h = self.velocity
             g += signum(x) * (accel[0] * self.speed)
@@ -105,6 +108,10 @@ class Player(pygame.sprite.Sprite):
         global projectiles
         proj = Projectile((self.rect.center[0], self.rect.center[1] - round(self.rect.height / 2)))
         projectiles.add(proj)
+
+    def get_anim_vector(self):
+
+        pass
 
     def update(self):
         self.is_thruster_running = False
@@ -135,6 +142,12 @@ class Player(pygame.sprite.Sprite):
         self.normalize_thrust_and_velocity_vector()  # Normalizes input and velocity vector :3 ## trochę chaos :c
         self.update_phys()
 
+        # zeroing velocity vector when under threshold
+        if -0.01 < self.velocity[0] < 0.01:
+            self.velocity = (0, self.velocity[1])
+        if -0.01 < self.velocity[1] < 0.01:
+            self.velocity = (self.velocity[0], 0)
+
         if self.rect.right > cfg.SCREEN_WIDTH:
             self.velocity = ((cfg.SCREEN_WIDTH - self.rect.right) * 0.2, self.velocity[1])
         if self.rect.left < 0:
@@ -148,13 +161,15 @@ class Player(pygame.sprite.Sprite):
         if pressed_keys[K_SPACE] and not self.cooldown_var:
             self.shoot()
             self.cooldown_var = self.cooldown_stat
-        # print(self.velocity)
         self.rect.move_ip(self.velocity[0] * dt, self.velocity[1] * dt)
 
         # Animation
-        self.anim_handler.update(self.thrust_vector, 0.7)
+        self.anim_handler.update(self.accel_vect, 0.7)
         # TODO: Ease in and out of acceleration - implement anim vector
 
-    def draw(self, surface):
+    def draw(self, surface: pygame.Surface):
+        if cfg.debug:
+            surface.blit(self.dbg, (0.0, 0.0))
+            surface.blit(ui.Fonts.default.render("Acc: " + str(self.accel_vect), True, colors.RGB.BLUE), (0.0, 10.0))
         self.anim_handler.draw(surface, self.rect.topleft)
         # Tu sterowanie przejmuje klasa GridSheetAnim

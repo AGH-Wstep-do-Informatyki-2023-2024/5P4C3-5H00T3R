@@ -65,7 +65,7 @@ class GridSheetAnim:  # Animacje na bazie wektora przyspieszenia
             for x in range(self.frames_v):  # indeks w rzedzie w tabeli frames
                 temp_frame_list.append(
                     self.sprite_sheet.get_image((y * self.frames_h + x), self.sprite_width, self.sprite_height,
-                                                self.sprite_scale, colors.RGB.KEY))
+                                                self.sprite_scale, colors.RGB.BLACK))
             self.frames.append(temp_frame_list)
         pass
 
