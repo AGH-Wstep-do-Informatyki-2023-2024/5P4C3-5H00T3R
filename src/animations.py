@@ -8,9 +8,10 @@ class SpriteSheet:  # przechowuje sprite sheet
         # load spritesheet image from path
         self.sheet = spritesheet_image
 
-    def get_image(self, x, width, height, scale, key_col):
+    def get_image(self, x, width, height, scale):
         # make empty surface the size of our sprite
         image = pygame.Surface((width, height)).convert_alpha()
+        image.fill((0, 0, 0, 0))
 
         # draw an animation frame onto the surface
         image.blit(self.sheet, (0, 0), ((x * width), 0, width, height))
@@ -18,8 +19,8 @@ class SpriteSheet:  # przechowuje sprite sheet
         # scale the sprite image
         image = pygame.transform.scale(image, (width * scale, height * scale))
 
-        # keying out the background colour
-        image.set_colorkey(key_col)
+        # # keying out the background colour
+        # image.set_colorkey(key_col)  # <---- unused
         return image
 
 
@@ -66,7 +67,7 @@ class GridSheetAnim:  # Animacje na bazie wektora przyspieszenia
             for x in range(self.frames_v):  # indeks w rzedzie w tabeli frames
                 temp_frame_list.append(
                     self.sprite_sheet.get_image((y * self.frames_h + x), self.sprite_width, self.sprite_height,
-                                                self.sprite_scale, colors.RGB.BLACK))
+                                                self.sprite_scale))
             self.frames.append(temp_frame_list)
         pass
 
@@ -134,8 +135,7 @@ class CyclicAnim:  # Animacje zapetlane - idle, plomenie, wydechy etc. moga miec
             for _ in range(animation):
                 temp_img_list.append(
                     self.sprite_sheet.get_image(step_counter, self.sprite_width, self.sprite_height,
-                                                self.sprite_scale,
-                                                colors.RGB.KEY))
+                                                self.sprite_scale))
                 step_counter += 1
             self.animation_list.append(temp_img_list)
 

@@ -22,7 +22,7 @@ class Player(pygame.sprite.Sprite):
         self.cooldown_stat = 20
         self.score = Score()
         # Physics
-        self.acceleration = AccelerationVector(1)
+        self.acceleration = AccelerationVector()
         self.velocity = VelocityVector(0.95, 0.5)
         self.dbg: pygame.Surface
 
@@ -36,8 +36,20 @@ class Player(pygame.sprite.Sprite):
 
     def update(self):
         pressed_keys = pygame.key.get_pressed()
+
         # movement
         self.velocity.update(self.acceleration, True)  # auto updates acceleration vector
+
+        # wall bouncing
+        if self.rect.right > cfg.SCREEN_WIDTH:
+            self.velocity.x = (cfg.SCREEN_WIDTH - self.rect.right) * 0.2
+        if self.rect.left < 0:
+            self.velocity.x = self.rect.left * -0.2
+        if self.rect.bottom > cfg.SCREEN_HEIGHT:
+            self.velocity.y = (cfg.SCREEN_HEIGHT - self.rect.bottom) * 0.2
+        if self.rect.top < 0:
+            self.velocity.y = self.rect.top * -0.2
+
         self.rect.move_ip(self.velocity.x * dt, self.velocity.y * dt)
 
         # shooting

@@ -3,10 +3,9 @@ from pygame.locals import *
 
 
 class AccelerationVector:
-    def __init__(self, max_accel: float):
+    def __init__(self):
         self.x = 0
         self.y = 0
-        self.max = max_accel  # currently unused
         pass
 
     def update(self):
@@ -50,6 +49,7 @@ class VelocityVector:
         self.drag_vect = (0, 0)
 
         self.max = max_vel
+        self.bounce_slowdown = 1.2
 
     def update(self, acc_vect: AccelerationVector, update_acc_vector: bool = False):
         self.drag_vect = (self.x * (1 - self.drag_coeff), self.y * (1 - self.drag_coeff))
@@ -67,7 +67,6 @@ class VelocityVector:
             self.x = self.max
         elif -1 * self.max > self.x:
             self.x = -1 * self.max
-            print("VELOCITY THRESHOLD: X")
 
         if -0.01 < self.y < 0.01:
             self.y = 0
@@ -75,6 +74,5 @@ class VelocityVector:
             self.y = self.max
         elif -1 * self.max > self.y:
             self.y = -1 * self.max
-            print("VELOCITY THRESHOLD: Y")
 
         # TODO: add bouncing off walls
