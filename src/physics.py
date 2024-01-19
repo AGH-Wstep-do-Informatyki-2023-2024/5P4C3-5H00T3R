@@ -74,5 +74,3 @@ class VelocityVector:
             self.y = self.max
         elif -1 * self.max > self.y:
             self.y = -1 * self.max
-
-        # TODO: add bouncing off walls

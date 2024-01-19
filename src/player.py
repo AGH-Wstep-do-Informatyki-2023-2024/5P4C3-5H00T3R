@@ -61,7 +61,8 @@ class Player(pygame.sprite.Sprite):
 
         # Animation
         self.anim_handler.update(self.velocity, 0.48, 0.2)
-        # TODO: Ease in and out of acceleration - implement anim vector
+
+        # TODO: Change hitbox to fit with alpha clipped sprite - pygame mask
 
     def draw(self, surface: pygame.Surface):
         surface.blit(
