@@ -1,4 +1,5 @@
 import pygame
+from src import physics
 from src import colors
 
 
@@ -69,42 +70,43 @@ class GridSheetAnim:  # Animacje na bazie wektora przyspieszenia
             self.frames.append(temp_frame_list)
         pass
 
-    def frame_xy_from_accel_vect(self, accel_vector, transition_threshold):
+    def frame_xy_from_accel_vect(self, accel_vector, transition_threshold: float,
+                                 standing_threshold: float):
         # wybiera ktore klatki wyswietlac na podstawie wektora przyspieszenia
 
         x, y = (self.frames_h - 1) // 2, (self.frames_v - 1) // 2
 
         # mapping x component of acceleration vector to frame coordinates (horizontal movement)
-        if accel_vector[0] > transition_threshold:
+        if accel_vector.x > transition_threshold:
             x += 2
-        elif accel_vector[0] > 0:
+        elif accel_vector.x > standing_threshold:
             x += 1
-        elif accel_vector[0] == 0:
+        elif accel_vector.x > -1 * standing_threshold:
             pass
-        elif accel_vector[0] > transition_threshold * -1:
+        elif accel_vector.x > transition_threshold * -1:
             x -= 1
         else:
             x -= 2
 
         # mapping y component of acceleration vector to frame coordinates (vertical movement)
-        if accel_vector[1] > transition_threshold:
+        if accel_vector.y > transition_threshold:
             y += 2
-        elif accel_vector[1] > 0:
+        elif accel_vector.y > standing_threshold:
             y += 1
-        elif accel_vector[1] == 0:
+        elif accel_vector.y > -1 * standing_threshold:
             pass
-        elif accel_vector[1] > transition_threshold * -1:
+        elif accel_vector.y > transition_threshold * -1:
             y -= 1
         else:
             y -= 2
 
         return x, y
 
-    def update(self, accel_vector, transition_threshold):
-        self.frame = self.frame_xy_from_accel_vect(accel_vector, transition_threshold)
+    def update(self, accel_vector, transition_threshold: float, standing_threshold: float):
+        self.frame = self.frame_xy_from_accel_vect(accel_vector, transition_threshold, standing_threshold)
         pass
 
-    def draw(self, screen: pygame.Surface, coords: tuple):
+    def draw(self, screen: pygame.Surface, coords: tuple[float, float]):
         screen.blit(self.frames[self.frame[1]][self.frame[0]], coords)
 
 
