@@ -1,14 +1,11 @@
 import pygame
-
-
-# from .config import cfg
-# from .gameinit import * # Na później
+from .animations import CyclicAnim
 
 class Projectile(pygame.sprite.Sprite):
     def __init__(self, coord):
         super().__init__()
-        self.image = pygame.image.load("img/Bullet.png")
-        self.rect = self.image.get_rect()
+        self.anim_handler = CyclicAnim(pygame.image.load("img/spritesheets/projectile.png"), [5], 10, 15, 30, 1)
+        self.rect = pygame.Rect(0, 0, 15, 30)
         self.rect.center = coord
         self.velocity = 8
         self.damage = 1
@@ -22,4 +19,4 @@ class Projectile(pygame.sprite.Sprite):
         self.kill()
 
     def draw(self, surface):
-        surface.blit(self.image, self.rect)
+        self.anim_handler.draw(surface, self.rect.topleft)

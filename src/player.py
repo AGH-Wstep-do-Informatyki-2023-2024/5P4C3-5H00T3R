@@ -1,5 +1,3 @@
-import pygame, sys
-from pygame.locals import *
 from src import animations
 from .gameinit import *
 from .projectiles import Projectile
@@ -30,9 +28,6 @@ class Player(pygame.sprite.Sprite):
         global projectiles
         proj = Projectile((self.rect.center[0], self.rect.center[1] - round(self.rect.height / 2)))
         projectiles.add(proj)
-
-    def get_anim_vector(self):
-        pass
 
     def update(self):
         pressed_keys = pygame.key.get_pressed()
@@ -65,12 +60,5 @@ class Player(pygame.sprite.Sprite):
         # TODO: Change hitbox to fit with alpha clipped sprite - pygame mask
 
     def draw(self, surface: pygame.Surface):
-        surface.blit(
-            ui.Fonts.default.render(f"ACC: ({self.acceleration.x}, {self.acceleration.y})", True, colors.RGB.BLACK),
-            (0, 0))
-        surface.blit(
-            ui.Fonts.default.render(f"VEL: ({self.velocity.x}, {self.velocity.y})", True, colors.RGB.BLACK),
-            (0, 15))
-
         self.anim_handler.draw(surface, self.rect.topleft)
         # Tu sterowanie przejmuje klasa GridSheetAnim

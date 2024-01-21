@@ -24,7 +24,7 @@ from src.score import *
 
 # Window stuff
 DISPLAYSURF = pygame.display.set_mode((cfg.SCREEN_WIDTH, cfg.SCREEN_HEIGHT))
-DISPLAYSURF.fill(colors.RGB.WHITE)
+DISPLAYSURF.fill(colors.RGB.BLACK)
 pygame.display.set_caption("Kosmiczne statki amarena giera ALPHA")
 
 
@@ -33,8 +33,10 @@ pygame.display.set_caption("Kosmiczne statki amarena giera ALPHA")
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, hp, damage, score_val):
         super().__init__()
-        self.image = pygame.image.load("img/Enemy.png")
-        self.rect = self.image.get_rect()
+
+        self.rect = pygame.Rect(0, 0, 64, 64)
+        self.anim_handler = animations.GridSheetAnim(pygame.image.load("img/spritesheets/Enemy_Basic.png"), 5, 5,
+                                                     self.rect.width, self.rect.height, 1)
         self.rect.center = (random.randint(40, cfg.SCREEN_WIDTH - 40), 0)
         self.hp = hp
         self.damage = damage
@@ -47,7 +49,7 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.center = (random.randint(30, 370), 0)
 
     def draw(self, surface):
-        surface.blit(self.image, self.rect)
+        self.anim_handler.draw(surface, self.rect.topleft)
 
 
 ######## FUNCTIONS ##############
@@ -69,10 +71,9 @@ def spawn_enemy(hp=2, damage=1, score_val=10):
 
 def redraw_game_window():
     # Background
-    try:
-        DISPLAYSURF.fill((255, int(P1.hp * 255 / 10), int(P1.hp * 255 / 10)))
-    except Hell:
-        DISPLAYSURF.fill((255, 255, 255))
+    DISPLAYSURF.fill(colors.RGB.BLACK)
+    BG.update()
+    BG.draw(DISPLAYSURF)
 
     # Players
     P1.draw(DISPLAYSURF)
@@ -98,6 +99,9 @@ SCORE = 0
 enemies = pygame.sprite.Group()
 enemies.add(E1)
 DebugMenu = DbgM.DebugMenu(P1)
+BG = animations.BgAnim(DISPLAYSURF.get_height(), "img/bckg/Default/Moon.png", "img/bckg/Default/Galaxy.png",
+                       "img/bckg/Default/Stars.png", 10, 20,
+                       30)
 
 # MAIN LOOP
 while True:
