@@ -24,7 +24,7 @@ from src import colors
 # display settings
 DISPLAYSURF = pygame.display.set_mode((cfg.SCREEN_WIDTH, cfg.SCREEN_HEIGHT))
 DISPLAYSURF.fill(colors.RGB.BLACK)
-pygame.display.set_caption("Kosmiczne statki amarena giera ALPHA")
+pygame.display.set_caption("5P4C3 5H00T3R")
 
 
 def update_state():
