@@ -4,6 +4,7 @@ from .config import cfg
 clock = pygame.time.Clock()
 dt = clock.tick(cfg.FPS)
 isPaused = False
+global inMenu
 inMenu = True
 
 def signum(x):

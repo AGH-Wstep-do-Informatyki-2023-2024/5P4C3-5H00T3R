@@ -25,7 +25,7 @@ class Player(pygame.sprite.Sprite):
         self.score = Score()
         # Physics
         self.speed = 0.08  # deprecated I guess # jednak nie
-        self.drag = 0.07
+        self.drag = 0.04
         self.base_acceleration = 0.75
         self.velocity = (0, 0)  # Speed of spaceship
         self.is_thruster_running = False

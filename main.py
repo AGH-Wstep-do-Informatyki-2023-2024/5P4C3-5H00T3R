@@ -17,6 +17,7 @@ from src.config import cfg
 from src.gameinit import *
 from src.fun import *
 from src.score import *
+from src.ui import MainMenu as MainM
 
 # from src.ui import fonts
 # Screen information # moved to config.py
@@ -68,11 +69,10 @@ def spawn_enemy(hp=2, damage=1, score_val=10):
 
 
 def redraw_game_window():
-    
     if inMenu:
-        pass
-    
-    if not isPaused:
+        DISPLAYSURF.fill((10, 10, 10))
+        MainMenu.draw(DISPLAYSURF)
+    if not inMenu:
         # Background
         try:
             DISPLAYSURF.fill((255, int(P1.hp * 255 / 10), int(P1.hp * 255 / 10)))
@@ -87,12 +87,11 @@ def redraw_game_window():
 
         for projectile in projectiles:
             projectile.draw(DISPLAYSURF)
-
+       
         # Scores
         P1.score.draw(DISPLAYSURF)
 
         DebugMenu.draw(DISPLAYSURF)
-
     pygame.display.update()
 
 
@@ -103,33 +102,32 @@ SCORE = 0
 enemies = pygame.sprite.Group()
 enemies.add(E1)
 DebugMenu = DbgM.DebugMenu(P1)
+MainMenu = MainM()
 
 # MAIN LOOP
 while True:
-
     # MENU LOOP
     if inMenu:
-        pass
+        MainMenu.update()
+        inMenu = MainMenu.isOn # TRAGEDYAAA ofahnisug andifoug naweirgb
     # GAME LOOP
-    if isPaused:
-        pass
-    else:
-        for event in pygame.event.get():
+    for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-
+    
+    if isPaused or inMenu:
+        pass
+    else:
         update_state()
-
         coll_enemy = pygame.sprite.spritecollideany(P1, enemies)
         if coll_enemy:
             # print(coll_enemy)
             P1.hp -= coll_enemy.damage
             coll_enemy.kill()
             spawn_enemy()
-            if P1.hp == 0:
-                pygame.quit()
-                sys.exit()
+            if P1.hp <= 0: # if player dies 
+                inMenu = True # for now # will get replaced by scoreboard later
 
         coll = pygame.sprite.groupcollide(enemies, projectiles, False, True)
         if coll:

@@ -18,8 +18,8 @@ class DebugMenu(pygame.sprite.Sprite):
         self.plr_old_HP = int(player.hp)
 
         infinite_HP = self.Boolsetting("Toggle infinite HP", False, self.make_player_invincible)
-        enemy_spawn = self.Boolsetting("Toggle enemy spawn", False, print())
-        Debug_hud = self.Boolsetting("Toggle debug HUD", False, print())
+        enemy_spawn = self.Boolsetting("Toggle enemy spawn", False, print)
+        Debug_hud = self.Boolsetting("Toggle debug HUD", False, print)
         self.pause = False
 
         self.settings = []
