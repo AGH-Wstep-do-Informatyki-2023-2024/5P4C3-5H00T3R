@@ -7,6 +7,7 @@ We're closing in on the deadline! These are some of the final changes before the
 - Reworked physics to better reflect object states
 - Replaced placeholder graphics with (probably) final sprites and background
 - Removed deprecated functions and cleaned up code
+- All classes moved to separate files
 - Added documentation comments
 - Developed 3D model to spritesheet pipeline for efficient sprite creation
 - Enemies and projectiles now use spritesheets instead of static images
