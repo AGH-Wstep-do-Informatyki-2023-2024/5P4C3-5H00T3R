@@ -3,4 +3,4 @@ from pygame.locals import *
 
 
 class Fonts:
-    default = pygame.font.SysFont(None, 24)
+    default = pygame.font.SysFont("monospace", 24)  # "monospace"

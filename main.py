@@ -1,56 +1,31 @@
-import pygame, sys
+import pygame
+import sys
 from pygame.locals import *
-import random
-from src import animations
 
-# from PygameShader.shader import dithering # might not be useful # not used for now
-
-# init
+# initialize engine
 pygame.init()
 FramePerSec = pygame.time.Clock()
 
-# Predefined some colors
-from src import colors
+# continue imports that need pygame engine
+from src import animations
 from src import debugmenu as DbgM
 from src.player import Player
-from src.config import cfg
+from src.enemies import Enemy
 from src.gameinit import *
-from src.fun import *
+from src.config import cfg
 from src.score import *
+from src import colors
 
+# from src.fun import *
+# from PygameShader.shader import dithering # might not be useful # not used for now
 # from src.ui import fonts
-# Screen information # moved to config.py
 
 
-# Window stuff
+# display settings
 DISPLAYSURF = pygame.display.set_mode((cfg.SCREEN_WIDTH, cfg.SCREEN_HEIGHT))
-DISPLAYSURF.fill(colors.RGB.WHITE)
-pygame.display.set_caption("Kosmiczne statki amarena giera ALPHA")
+DISPLAYSURF.fill(colors.RGB.BLACK)
+pygame.display.set_caption("5P4C3 5H00T3R")
 
-
-######## CLASS STUFF #############
-
-class Enemy(pygame.sprite.Sprite):
-    def __init__(self, hp, damage, score_val):
-        super().__init__()
-        self.image = pygame.image.load("img/Enemy.png")
-        self.rect = self.image.get_rect()
-        self.rect.center = (random.randint(40, cfg.SCREEN_WIDTH - 40), 0)
-        self.hp = hp
-        self.damage = damage
-        self.score_val = score_val
-
-    def move(self, vel=2):
-        self.rect.move_ip(0, vel)
-        if self.rect.bottom > 600:
-            self.rect.top = 0
-            self.rect.center = (random.randint(30, 370), 0)
-
-    def draw(self, surface):
-        surface.blit(self.image, self.rect)
-
-
-######## FUNCTIONS ##############
 
 def update_state():
     P1.update()
@@ -69,10 +44,9 @@ def spawn_enemy(hp=2, damage=1, score_val=10):
 
 def redraw_game_window():
     # Background
-    try:
-        DISPLAYSURF.fill((255, int(P1.hp * 255 / 10), int(P1.hp * 255 / 10)))
-    except Hell:
-        DISPLAYSURF.fill((255, 255, 255))
+    DISPLAYSURF.fill(colors.RGB.BLACK)
+    BG.update()
+    BG.draw(DISPLAYSURF)
 
     # Players
     P1.draw(DISPLAYSURF)
@@ -91,15 +65,18 @@ def redraw_game_window():
     pygame.display.update()
 
 
-######## VARIABLES ###############
+# defining game objects
 P1 = Player()
 E1 = Enemy(2, 1, 10)
 SCORE = 0
 enemies = pygame.sprite.Group()
 enemies.add(E1)
 DebugMenu = DbgM.DebugMenu(P1)
+BG = animations.BgAnim(DISPLAYSURF.get_height(), "img/bckg/Default/Moon.png", "img/bckg/Default/Galaxy.png",
+                       "img/bckg/Default/Stars.png", 10, 20,
+                       30)
 
-# MAIN LOOP
+# Game Loop
 while True:
     for event in pygame.event.get():
         if event.type == QUIT:
